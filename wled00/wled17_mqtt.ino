@@ -32,6 +32,16 @@ void onMqttConnect(bool sessionPresent)
     strcpy(subuf, mqttDeviceTopic);
     strcat(subuf, "/api");
     mqtt->subscribe(subuf, 0);
+
+    //Me suscribo al Speed, como Pocholo
+    strcpy(subuf, mqttDeviceTopic);
+    strcat(subuf, "/speed");
+    mqtt->subscribe(subuf, 0);
+
+    //Me suscribo al Intentsity
+    strcpy(subuf, mqttDeviceTopic);
+    strcat(subuf, "/intent");
+    mqtt->subscribe(subuf, 0);
   }
 
   if (mqttGroupTopic[0] != 0)
@@ -68,7 +78,23 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
     String apireq = "win&";
     apireq += (char*)payload;
     handleSet(nullptr, apireq);
-  } else parseMQTTBriPayload(payload);
+  }
+  else if(strstr(topic, "/speed")){
+    char s[10];
+    effectSpeed=(uint8_t)atoi(payload);
+    sprintf (s, "[FX=%02d] %s", strip.getMode(), efectos[strip.getMode()]);
+    String apireq = "win&";
+    apireq += (char*)s;
+    handleSet(nullptr, apireq);
+  }
+  else if(strstr(topic, "/intent")){
+    char s[10];
+    effectIntensity=(uint8_t)atoi(payload);
+    sprintf (s, "[FX=%02d] %s", strip.getMode(), efectos[strip.getMode()]);
+    String apireq = "win&";
+    apireq += (char*)s;
+    handleSet(nullptr, apireq);
+  }else parseMQTTBriPayload(payload);
 }
 
 
@@ -91,11 +117,36 @@ void publishMqtt()
   strcat(subuf, "/c");
   mqtt->publish(subuf, 0, true, s);
 
-  char apires[1024];
-  XML_response(nullptr, false, apires);
+  //Envi del estado encendido/apagado
   strcpy(subuf, mqttDeviceTopic);
-  strcat(subuf, "/v");
-  mqtt->publish(subuf, 0, true, apires);
+  strcat(subuf, "/state");
+  if (bri>0){strcpy(s, "ON");}else{strcpy(s, "OFF");ticker.once(1, Restore_Solid);}
+  mqtt->publish(subuf, 0, true, s);
+  DEBUG_PRINTLN(strip.getSpeed());
+
+  //Envio del Efecto seleccionado
+  strcpy(subuf, mqttDeviceTopic);
+  strcat(subuf, "/api/state");
+  sprintf (s, "[FX=%02d] %s", strip.getMode(), efectos[strip.getMode()]);
+  mqtt->publish(subuf, 0, true, s);
+
+  //Envio la velocidad
+  strcpy(subuf, mqttDeviceTopic);
+  strcat(subuf, "/speed/state");
+  sprintf (s, "%d", strip.getSpeed());
+  mqtt->publish(subuf, 0, true, s);
+
+  //Envio la intensidad
+  strcpy(subuf, mqttDeviceTopic);
+  strcat(subuf, "/intent/state");
+  sprintf (s, "%d", effectIntensity);
+  mqtt->publish(subuf, 0, true, s);
+
+  // char apires[1024];
+  // XML_response(nullptr, false, apires);
+  // strcpy(subuf, mqttDeviceTopic);
+  // strcat(subuf, "/v");
+  // mqtt->publish(subuf, 0, true, apires);
 }
 
 const char HA_static_JSON[] PROGMEM = R"=====(,"bri_val_tpl":"{{value}}","rgb_cmd_tpl":"{{'#%02x%02x%02x' | format(red, green, blue)}}","rgb_val_tpl":"{{value[1:3]|int(base=16)}},{{value[3:5]|int(base=16)}},{{value[5:7]|int(base=16)}}","qos":0,"opt":true,"pl_on":"ON","pl_off":"OFF","fx_val_tpl":"{{value}}","fx_list":[)=====";
@@ -137,13 +188,13 @@ Send out HA MQTT Discovery message on MQTT connect (~2.4kB):
 }
 
   */
-  char bufc[36], bufcol[38], bufg[36], bufapi[38], buffer[2500];
+  char bufc[36], bufcc[4], bufcol[38], bufg[36], bufapi[38], buffer[2500];
 
   strcpy(bufc, mqttDeviceTopic);
   strcpy(bufcol, mqttDeviceTopic);
   strcpy(bufg, mqttDeviceTopic);
   strcpy(bufapi, mqttDeviceTopic);
-
+  if (bri=0){strcpy(bufcc, "OFF");}else{(bufcc, "ON");}
   strcat(bufc, "/c");
   strcat(bufcol, "/col");
   strcat(bufg, "/g");
@@ -228,6 +279,7 @@ bool initMqtt()
     mqtt->setServer(mqttServer, WLED_MQTT_PORT);
   }
   mqtt->setClientId(escapedMac.c_str());
+  mqtt->setCredentials("topota", "tool88");
   mqtt->onMessage(onMqttMessage);
   mqtt->onConnect(onMqttConnect);
   mqtt->connect();

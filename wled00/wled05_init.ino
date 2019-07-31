@@ -136,7 +136,7 @@ void wledInit()
   userBegin();
 
   if (macroBoot>0) applyMacro(macroBoot);
-  Serial.println("Ada");
+  Serial.println("La Virgen");
 }
 
 

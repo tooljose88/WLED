@@ -35,7 +35,7 @@
  */
 uint16_t WS2812FX::mode_static(void) {
   fill(SEGCOLOR(0));
-  return (SEGMENT.getOption(7)) ? 20 : 500; //update faster if in transition
+  return 50;//(SEGMENT.getOption(7)) ? 20 : 500; //update faster if in transition
 }
 
 

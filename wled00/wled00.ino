@@ -24,13 +24,13 @@
 //#define WLED_DISABLE_INFRARED    //there is no pin left for this on ESP8266-01
 //#define WLED_DISABLE_MOBILE_UI
 
-
-#define WLED_DISABLE_FILESYSTEM    //SPIFFS is not used by any WLED feature yet
+#define LED_BUILTIN 0
+#define WLED_DISABLE_FILESYSTEM   
+ //SPIFFS is not used by any WLED feature yet
 //#define WLED_ENABLE_FS_SERVING   //Enable sending html file from SPIFFS before serving progmem version
 //#define WLED_ENABLE_FS_EDITOR    //enable /edit page for editing SPIFFS content. Will also be disabled with OTA lock
-
 //to toggle usb serial debug (un)comment the following line
-//#define WLED_DEBUG
+#define WLED_DEBUG
 
 
 //library inclusions
@@ -76,6 +76,7 @@
 #include "html_other.h"
 #include "WS2812FX.h"
 #include "ir_codes.h"
+#include <Ticker.h>
 
 
 #if IR_PIN < 0
@@ -160,7 +161,7 @@ byte briMultiplier =  100;                    //% of brightness to set (to limit
 
 
 //User Interface CONFIG
-char serverDescription[33] = "WLED Light";    //Name of module
+char serverDescription[33] = "WLED_Light";    //Name of module
 byte currentTheme = 7;                        //UI theme index for settings and classic UI
 byte uiConfiguration = 0;                     //0: automatic (depends on user-agent) 1: classic UI 2: mobile UI
 bool useHSB = true;                           //classic UI: use HSB sliders instead of RGB by default
@@ -201,7 +202,7 @@ bool e131Enabled = true;                      //settings for E1.31 (sACN) protoc
 uint16_t e131Universe = 1;
 bool e131Multicast = false;
 
-char mqttDeviceTopic[33] = "";                //main MQTT topic (individual per device, default is wled/mac)
+char mqttDeviceTopic[33] = "/habitacion/escritorio";                //main MQTT topic (individual per device, default is wled/mac)
 char mqttGroupTopic[33] = "wled/all";         //second MQTT topic (for example to group devices)
 char mqttServer[33] = "";                     //both domains and IPs should work (no SSL)
 
@@ -280,6 +281,16 @@ uint32_t nightlightDelayMs = 10;
 uint8_t nightlightDelayMinsDefault = nightlightDelayMins;
 unsigned long nightlightStartTime;
 byte briNlT = 0;                              //current nightlight brightness
+//effects
+const char* efectos[] = {
+"Solid","Blink","Breathe","Wipe","Wipe Random","Random Colors","Sweep","Dynamic","Colorloop","Rainbow",
+"Scan","Dual Scan","Fade","Chase","Chase Rainbow","Running","Saw","Twinkle","Dissolve","Dissolve Rnd",
+"Sparkle","Dark Sparkle","Sparkle+","Strobe","Strobe Rainbow","Mega Strobe","Blink Rainbow","Android","Chase","Chase Random",
+"Chase Rainbow","Chase Flash","Chase Flash Rnd","Rainbow Runner","Colorful","Traffic Light","Sweep Random","Running 2","Red & Blue","Stream",
+"Scanner","Lighthouse","Fireworks","Rain","Merry Christmas","Fire Flicker","Gradient","Loading","In Out","In In",
+"Out Out","Out In","Circus","Halloween","Tri Chase","Tri Wipe","Tri Fade","Lightning","ICU","Multi Comet",
+"Dual Scanner","Stream 2","Oscillate","Pride 2015","Juggle","Palette","Fire 2012","Colorwaves","BPM","Fill Noise","Noise 1",
+"Noise 2","Noise 3","Noise 4","Colortwinkle","Lake","Meteor","Smooth Meteor","Railway","Ripple"};
 
 //brightness
 unsigned long lastOnTime = 0;
@@ -355,6 +366,7 @@ byte timerMinutes[] = {0,0,0,0,0,0,0,0};
 byte timerMacro[]   = {0,0,0,0,0,0,0,0};
 byte timerWeekday[] = {255,255,255,255,255,255,255,255}; //weekdays to activate on
 //bit pattern of arr elem: 0b11111111: sun,sat,fri,thu,wed,tue,mon,validity
+Ticker ticker;
 
 //blynk
 bool blynkEnabled = false;
@@ -491,7 +503,8 @@ bool oappendi(int i)
 
 //boot starts here
 void setup() {
-  pinMode(4, OUTPUT); digitalWrite(4, HIGH);
+ // pinMode(4, OUTPUT); digitalWrite(4, LOW);
+ // pinMode(16, OUTPUT); digitalWrite(16, LOW);
   wledInit();
 }
 
@@ -557,4 +570,8 @@ void loop() {
      debugTime = millis(); 
    }
   #endif
+}
+void Restore_Solid(){
+  String apireq = "win&[FX=00] Solid";
+  handleSet(nullptr, apireq);
 }
