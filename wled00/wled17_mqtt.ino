@@ -279,7 +279,7 @@ bool initMqtt()
     mqtt->setServer(mqttServer, WLED_MQTT_PORT);
   }
   mqtt->setClientId(escapedMac.c_str());
-  mqtt->setCredentials("topota", "tool88");
+  mqtt->setCredentials("User", "Password");
   mqtt->onMessage(onMqttMessage);
   mqtt->onConnect(onMqttConnect);
   mqtt->connect();
