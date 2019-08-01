@@ -255,7 +255,6 @@ Device Auth token: <input name="BK" maxlength="33"><br>
 Broker: <input name="MS" maxlength="32"><br>
 MQTT User: <input name="MUs" maxlength="25"><br>
 MQTT Pass: <input name="MPs" maxlength="25"><br>
-ClientID: <input name="MCl" maxlength="15"><br>
 Device Topic: <input name="MD" maxlength="32"><br>
 Group Topic: <input name="MG" maxlength="32"><br>
 Enable connect with credentials<input type="checkbox" name="MCr"><br>
