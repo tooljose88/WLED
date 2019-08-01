@@ -280,7 +280,7 @@ bool initMqtt()
   }
   mqtt->setClientId(clientID);
   //When Credentials is activated send it to server
-  if(mqttcredential{mqtt->setCredentials(MQTTuser, MQTTpass);}
+  if(mqttcredential){mqtt->setCredentials(MQTTuser, MQTTpass);}
   mqtt->onMessage(onMqttMessage);
   mqtt->onConnect(onMqttConnect);
   mqtt->connect();

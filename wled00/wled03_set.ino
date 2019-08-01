@@ -177,8 +177,8 @@ void handleSettingsSet(AsyncWebServerRequest *request, byte subPage)
     }
 
     strcpy(mqttServer, request->arg("MS").c_str());
-    strcpy(MQTTUser, request->arg("MUs").c_str());
-    strcpy(MQTTPass, request->arg("MPs").c_str());
+    strcpy(MQTTuser, request->arg("MUs").c_str());
+    strcpy(MQTTpass, request->arg("MPs").c_str());
     strcpy(mqttDeviceTopic, request->arg("MD").c_str());
     strcpy(mqttGroupTopic, request->arg("MG").c_str());
     mqttcredential = request->hasArg("MCr");
