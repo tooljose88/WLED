@@ -177,9 +177,14 @@ void handleSettingsSet(AsyncWebServerRequest *request, byte subPage)
     }
 
     strcpy(mqttServer, request->arg("MS").c_str());
+    strcpy(MQTTUser, request->arg("MUs").c_str());
+    strcpy(MQTTPass, request->arg("MPs").c_str());
     strcpy(mqttDeviceTopic, request->arg("MD").c_str());
     strcpy(mqttGroupTopic, request->arg("MG").c_str());
-    
+    strcpy(clientID, request->arg("MCl").c_str());
+    mqttcredential = request->hasArg("MCr");
+
+
     for (int i=0;i<4;i++){
       String a = "H"+String(i);
       hueIP[i] = request->arg(a).toInt();

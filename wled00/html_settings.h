@@ -253,8 +253,12 @@ Device Auth token: <input name="BK" maxlength="33"><br>
 <i>Clear the token field to disable. </i><a href="https://github.com/Aircoookie/WLED/wiki/Blynk" target="_blank">Setup info</a>
 <h3>MQTT</h3>
 Broker: <input name="MS" maxlength="32"><br>
+MQTT User: <input name="MUs" maxlength="25"><br>
+MQTT Pass: <input name="MPs" maxlength="25"><br>
+ClientID: <input name="MCl" maxlength="15"><br>
 Device Topic: <input name="MD" maxlength="32"><br>
 Group Topic: <input name="MG" maxlength="32"><br>
+Enable connect with credentials<input type="checkbox" name="MCr"><br>
 <i>Reboot required to apply changes. </i><a href="https://github.com/Aircoookie/WLED/wiki/MQTT" target="_blank">MQTT info</a>
 <h3>Philips Hue</h3>
 <i>You can find the bridge IP and the light number in the 'About' section of the hue app.</i><br>
