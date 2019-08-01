@@ -129,6 +129,13 @@ IPAddress staticIP(0, 0, 0, 0);               //static IP of ESP
 IPAddress staticGateway(0, 0, 0, 0);          //gateway (router) IP
 IPAddress staticSubnet(255, 255, 255, 0);     //most common subnet in home networks
 
+//MQTT CONFIG (Prepare for web UI)
+char clientID[15] = "WLED";
+char MQTTuser[15] = "";
+char MQTTpass[25] = "";
+bool mqttcredential = false;
+
+
 //LED CONFIG
 uint16_t ledCount = 30;                       //overcurrent prevented by ABL             
 bool useRGBW = false;                         //SK6812 strips can contain an extra White channel

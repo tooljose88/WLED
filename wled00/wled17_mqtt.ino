@@ -278,8 +278,9 @@ bool initMqtt()
   } else {
     mqtt->setServer(mqttServer, WLED_MQTT_PORT);
   }
-  mqtt->setClientId(escapedMac.c_str());
-  mqtt->setCredentials("User", "Password");
+  mqtt->setClientId(clientID);
+  //When Credentials is activated send it to server
+  if(mqttcredential{mqtt->setCredentials(MQTTuser, MQTTpass);}
   mqtt->onMessage(onMqttMessage);
   mqtt->onConnect(onMqttConnect);
   mqtt->connect();
