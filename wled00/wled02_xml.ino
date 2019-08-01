@@ -312,7 +312,7 @@ void getSettingsJS(byte subPage, char* dest)
     sappends('s',"MG",mqttGroupTopic);
     sappends('s',"MUs",MQTTuser);
     sappends('s',"MPs",MQTTpass);
-    sappend('c',"MCr",mqttcredentials);
+    sappend('c',"MCr",mqttcredential);
     sappend('v',"H0",hueIP[0]);
     sappend('v',"H1",hueIP[1]);
     sappend('v',"H2",hueIP[2]);
