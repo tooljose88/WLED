@@ -116,7 +116,7 @@ void publishMqtt()
   // strcpy(subuf, mqttDeviceTopic);
   // strcat(subuf, "/c");
   // mqtt->publish(subuf, 0, true, s);
-  sprintf(s, "", col[0] + col[1] + col[2]);
+  sprintf(s, "%u,%u,%u", col[0], col[1], col[2]);
   strcpy(subuf, mqttDeviceTopic);
   strcat(subuf, "/c");
   mqtt->publish(subuf, 0, true, s);
