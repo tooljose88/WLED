@@ -112,12 +112,16 @@ void publishMqtt()
   strcat(subuf, "/g");
   mqtt->publish(subuf, 0, true, s);
 
-  sprintf(s, "#%06X", col[3]*16777216 + col[0]*65536 + col[1]*256 + col[2]);
+  // sprintf(s, "#%06X", col[3]*16777216 + col[0]*65536 + col[1]*256 + col[2]);
+  // strcpy(subuf, mqttDeviceTopic);
+  // strcat(subuf, "/c");
+  // mqtt->publish(subuf, 0, true, s);
+  sprintf(s, "", col[0] + col[1] + col[2]);
   strcpy(subuf, mqttDeviceTopic);
   strcat(subuf, "/c");
   mqtt->publish(subuf, 0, true, s);
 
-  //Envi del estado encendido/apagado
+  //Envio del estado encendido/apagado
   strcpy(subuf, mqttDeviceTopic);
   strcat(subuf, "/state");
   if (bri>0){strcpy(s, "ON");}else{strcpy(s, "OFF");ticker.once(1, Restore_Solid);}
