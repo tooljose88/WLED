@@ -582,3 +582,7 @@ void Restore_Solid(){
   String apireq = "win&[FX=00] Solid";
   handleSet(nullptr, apireq);
 }
+void Restore_White(){
+  col[0]=255;col[1]=255;col[2]=255;
+  handleSet(nullptr, apireq);
+}
