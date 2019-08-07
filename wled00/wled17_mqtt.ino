@@ -124,7 +124,7 @@ void publishMqtt()
   //Envio del estado encendido/apagado
   strcpy(subuf, mqttDeviceTopic);
   strcat(subuf, "/state");
-  if (bri>0){strcpy(s, "ON");}else{strcpy(s, "OFF");ticker.once(1, Restore_Solid);}
+  if (bri>0){strcpy(s, "ON");}else{strcpy(s, "OFF");ticker.once(1, Restore_Solid);ticker.once(1, Restore_White);}
   mqtt->publish(subuf, 0, true, s);
   DEBUG_PRINTLN(strip.getSpeed());
 
