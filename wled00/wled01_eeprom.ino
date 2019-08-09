@@ -175,6 +175,8 @@ void saveSettingsToEEPROM()
   writeStringToEEPROM(982, MQTTuser, 14);
   writeStringToEEPROM(996, MQTTpass, 24);
   EEPROM.write(1020, mqttcredential);
+  EEPROM.write(1021, restoref);
+  EEPROM.write(1022, restorecol);
 
   EEPROM.write(2048, huePollingEnabled);
   //EEPROM.write(2049, hueUpdatingEnabled);
