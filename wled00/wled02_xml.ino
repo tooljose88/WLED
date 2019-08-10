@@ -245,6 +245,8 @@ void getSettingsJS(byte subPage, char* dest)
     sappend('v',"SB",colSecS[2]);
     sappend('v',"SW",colSecS[3]);
     sappend('c',"BO",turnOnAtBoot);
+    sappend('c',"REF",restoref);
+    sappend('c',"REC",restorec);
     sappend('v',"BP",bootPreset);
     oappend("f=");
     oappendi(effectDefault);
@@ -266,8 +268,6 @@ void getSettingsJS(byte subPage, char* dest)
     sappend('i',"PB",strip.paletteBlend);
     sappend('c',"RV",strip.reverseMode);
     sappend('c',"SL",skipFirstLed);
-    sappend('c',"RCO",restorecol);
-    sappend('c',"REF",restoref);
   }
 
   if (subPage == 3)

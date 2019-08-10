@@ -144,6 +144,7 @@ void updateInterfaces(uint8_t callMode)
   if (callMode != 9 && callMode != 5) updateBlynk();
   publishMqtt();
   lastInterfaceUpdate = millis();
+  if(bri<=0){ticker.once(1, Restore_EC);}
 }
 
 

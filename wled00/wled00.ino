@@ -152,8 +152,8 @@ byte effectSpeedDefault = 75;
 byte effectIntensityDefault = 128;            //intensity is supported on some effects as an additional parameter (e.g. for blink you can change the duty cycle)
 byte effectPaletteDefault = 0;                //palette is supported on the FastLED effects, otherwise it has no effect
 
-bool restoref = false;                        // Restore a color when is turned off
-bool restorecol = false;                    // Restore to solid effect when is turned off
+bool restoref = false;                        //Restore default effect when is turned off
+bool restorec = false;                        //Restore default color when is turned off
 
 //bool strip.gammaCorrectBri = false;         //gamma correct brightness (not recommended) --> edit in WS2812FX.h
 //bool strip.gammaCorrectCol = true;          //gamma correct colors (strongly recommended)
@@ -581,14 +581,18 @@ void loop() {
    }
   #endif
 }
-void Restore_Solid(){
-  // String apireq = "win&[FX=00] Solid";
-  // handleSet(nullptr, apireq);
-  strip.setMode(effectDefault);
-}
-void Restore_Color(){
-  col[0]=colS[0];
-  col[1]=colS[1];
-  col[2]=colS[2];
-  strip.show();
+void Restore_EC(){
+  if (restoref){
+    String apireq = "win&[FX=00] Solid";
+    handleSet(nullptr, apireq);
+    //strip.setMode(effectDefault);
+      
+   }
+  if (restorec){
+    col[0]=colS[0];
+    col[1]=colS[1];
+    col[2]=colS[2];
+    strip.show();
+  }
+  return;
 }

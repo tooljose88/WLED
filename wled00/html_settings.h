@@ -98,11 +98,11 @@ Color order:
 <option value="3">RBG</option></select>
 <h3>Defaults</h3>
 Turn LEDs on after power up/reset: <input type="checkbox" name="BO"><br>
+Restore to default effect when LEDs is turned off: <input type="checkbox" name="REF"><br>
+Restore to default color when LEDs is turned off: <input type="checkbox" name="REC"><br>
 Default brightness: <input name="CA" type="number" min="0" max="255" required> (0-255)<br><br>
 Set current color, brightness and effects as boot default: <input type="checkbox" name="IS"><br>
-Set current preset cycle setting as boot default: <input type="checkbox" name="PC"><br>
-Restore default color when is turned off: <input type="checkbox" name="RCO"><br>
-Restore default effect when is turned off: <input type="checkbox" name="REF">
+Set current preset cycle setting as boot default: <input type="checkbox" name="PC">
 <br>- <i>or</i> -<br>
 Apply preset <input name="BP" type="number" min="0" max="25" required> at boot (0 uses defaults)
 <br>- <i>or</i> -<br>

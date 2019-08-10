@@ -176,7 +176,7 @@ void saveSettingsToEEPROM()
   writeStringToEEPROM(996, MQTTpass, 24);
   EEPROM.write(1020, mqttcredential);
   EEPROM.write(1021, restoref);
-  EEPROM.write(1022, restorecol);
+  EEPROM.write(1022, restorec);
 
   EEPROM.write(2048, huePollingEnabled);
   //EEPROM.write(2049, hueUpdatingEnabled);
@@ -291,6 +291,8 @@ void loadSettingsFromEEPROM(bool first)
   readStringFromEEPROM(982, MQTTuser, 14);
   readStringFromEEPROM(996, MQTTpass, 24);
   mqttcredential = EEPROM.read(1020);
+  restoref = EEPROM.read(1021);
+  restorec = EEPROM.read(1022);
 
   nightlightDelayMinsDefault = EEPROM.read(224);
   nightlightDelayMins = nightlightDelayMinsDefault;
