@@ -145,7 +145,7 @@ void deserializeHA(JsonObject root)
 
 
 
-void serializeHA (StaticJsonDocument<JSON_OBJECT_SIZE(9) +600> root)
+void serializeHA (JsonObject root)
 {
   char s[10];
   if (bri > 0){root["state"]="ON";} else{root["state"]="OFF";}
@@ -154,13 +154,14 @@ void serializeHA (StaticJsonDocument<JSON_OBJECT_SIZE(9) +600> root)
 
   JsonObject nl = root.createNestedObject("color");
   nl["r"] = col[0];
-  nl["g"] = col[2];
-  nl["b"] = col[3]; 
+  nl["g"] = col[1];
+  nl["b"] = col[2]; 
 
   root["color_temp"] = tempcol;
   root["intensity"] = effectIntensity;
   root["transition"] = effectSpeed;
-  root["effect"] = sprintf (s, "[FX=%02d] %s", strip.getMode(), efectos[strip.getMode()]);
+  sprintf (s, "[FX=%02d] %s", strip.getMode(), efectos[strip.getMode()]);
+  root["effect"] = s;
 }
 
 
