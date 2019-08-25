@@ -101,6 +101,72 @@ bool deserializeState(JsonObject root)
   return stateResponse;
 }
 
+
+void deserializeHA(JsonObject root)
+{
+  DEBUG_PRINTLN("Comienza el Desiarlize");
+  if (root.containsKey("brightness")){
+    if (root["brightness"] == 0 && bri > 0) briLast = bri;
+    bri = root["brightness"];
+    colorUpdated(1);}
+  
+  if (root.containsKey("state")){
+    if(!strcmp(root["state"], "ON")){bri=briLast;}
+    else if(!strcmp(root["state"], "OFF") && bri>0){briLast=bri; bri=0;}
+  }
+  if (root.containsKey("transition"))
+  {
+    effectSpeed=root["transition"];
+  }
+  if (root.containsKey("intensity"))
+  {
+    effectIntensity=root["intensity"];
+  }
+  if (root.containsKey("effect")){
+     const char* s;
+     String apireq = "win&";
+     s = (root["effect"]);
+     apireq+=s;
+     handleSet(nullptr, apireq);
+  }
+  if (root.containsKey("color")){
+    col[0] = root["color"]["r"];
+    col[1] = root["color"]["g"];
+    col[2] = root["color"]["b"];
+  }
+  if (root.containsKey("color_temp"))
+  {
+    colorCTtoRGB(((uint16_t)root["color_temp"]),col);
+    tempcol=root["color_temp"];
+  }
+  colorUpdated(1);
+
+}
+
+
+
+void serializeHA (StaticJsonDocument<JSON_OBJECT_SIZE(9) +600> root)
+{
+  char s[10];
+  if (bri > 0){root["state"]="ON";} else{root["state"]="OFF";}
+  root["brightness"] = bri;
+  root["transition"] = effectSpeed;
+
+  JsonObject nl = root.createNestedObject("color");
+  nl["r"] = col[0];
+  nl["g"] = col[2];
+  nl["b"] = col[3]; 
+
+  root["color_temp"] = tempcol;
+  root["intensity"] = effectIntensity;
+  root["transition"] = effectSpeed;
+  root["effect"] = sprintf (s, "[FX=%02d] %s", strip.getMode(), efectos[strip.getMode()]);
+}
+
+
+
+
+
 void serializeState(JsonObject root)
 {
   root["on"] = (bri > 0);

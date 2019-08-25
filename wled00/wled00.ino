@@ -151,7 +151,7 @@ byte effectDefault = 0;
 byte effectSpeedDefault = 75;
 byte effectIntensityDefault = 128;            //intensity is supported on some effects as an additional parameter (e.g. for blink you can change the duty cycle)
 byte effectPaletteDefault = 0;                //palette is supported on the FastLED effects, otherwise it has no effect
-
+int tempcol = 127;
 bool restoref = false;                        //Restore default effect when is turned off
 bool restorec = false;                        //Restore default color when is turned off
 

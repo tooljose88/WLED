@@ -32,24 +32,26 @@ void colorHStoRGB(uint16_t hue, byte sat, byte* rgb) //hue, sat to rgb
 #ifndef WLED_DISABLE_HUESYNC
 void colorCTtoRGB(uint16_t mired, byte* rgb) //white spectrum to rgb
 {
+  tempcol = mired;
   //this is only an approximation using WS2812B with gamma correction enabled
   if (mired > 475) {
-    rgb[0]=255;rgb[1]=199;rgb[2]=92;//500
+    rgb[0]=255;rgb[1]=175;rgb[2]=92;//500
   } else if (mired > 425) {
-    rgb[0]=255;rgb[1]=213;rgb[2]=118;//450
+    rgb[0]=255;rgb[1]=195;rgb[2]=118;//450
   } else if (mired > 375) {
-    rgb[0]=255;rgb[1]=216;rgb[2]=118;//400
+    rgb[0]=255;rgb[1]=205;rgb[2]=125;//400
   } else if (mired > 325) {
-    rgb[0]=255;rgb[1]=234;rgb[2]=140;//350
+    rgb[0]=255;rgb[1]=215;rgb[2]=148;//350
   } else if (mired > 275) {
-    rgb[0]=255;rgb[1]=243;rgb[2]=160;//300
+    rgb[0]=255;rgb[1]=223;rgb[2]=160;//300
   } else if (mired > 225) {
-    rgb[0]=250;rgb[1]=255;rgb[2]=188;//250
+    rgb[0]=250;rgb[1]=235;rgb[2]=188;//250
   } else if (mired > 175) {
-    rgb[0]=247;rgb[1]=255;rgb[2]=215;//200
+    rgb[0]=247;rgb[1]=245;rgb[2]=215;//200
   } else {
     rgb[0]=237;rgb[1]=255;rgb[2]=239;//150
   }
+  strip.show();
 }
 
 void colorXYtoRGB(float x, float y, byte* rgb) //coordinates to rgb (https://www.developers.meethue.com/documentation/color-conversions-rgb-xy)
