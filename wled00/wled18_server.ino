@@ -70,8 +70,8 @@ void initServer()
     serveJson(request);
   });
 
-  AsyncCallbackJsonWebHandler* handler = new AsyncCallbackJsonWebHandler("/json", [](AsyncWebServerRequest *request, JsonVariant &json) {
-    JsonObject root = json.to<JsonObject>();
+AsyncCallbackJsonWebHandler* handler = new AsyncCallbackJsonWebHandler("/json", [](AsyncWebServerRequest *request, JsonObject root) {
+
     if (root.isNull()){request->send(500, "application/json", "{\"error\":\"Parsing failed\"}"); return;}
     if (deserializeState(root)) { serveJson(request); return; } //if JSON contains "v" (verbose response)
     request->send(200, "application/json", "{\"success\":true}");
@@ -305,7 +305,7 @@ String settingsProcessor(const String& var)
     getCSSColors();
     return String(buf);
   }
-  if (var == "SCSS") return String(PAGE_settingsCss);
+  if (var == "SCSS") return String(FPSTR(PAGE_settingsCss));
   return String();
 }
 
