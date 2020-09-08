@@ -80,7 +80,7 @@ void colorCTtoRGB(uint16_t mired, byte* rgb) //white spectrum to rgb
   } else if (mired > 175) {
     rgb[0]=247;rgb[1]=255;rgb[2]=215;//200
   } else {
-    rgb[0]=237;rgb[1]=255;rgb[2]=239;//150
+    rgb[0]=237;rgb[1]=255;rgb[2]=255;//150
   }
   if (useRGBW && strip.rgbwMode == RGBW_MODE_LEGACY) colorRGBtoRGBW(col);
 }
