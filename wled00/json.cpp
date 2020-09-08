@@ -259,23 +259,6 @@ void serializeHA(JsonObject root){
     color["r"] = col[0];
     color["g"] = col[1];
     color["b"] = col[2];
-  // if(root.containsKey("effect")){
-  // effectCurrent = root["effect"] | effectCurrent;
-  // effectSpeed = root["transition"] | effectSpeed;
-  // effectIntensity = root["ix"] | effectIntensity;
-  // effectPalette = root["pal"] | effectPalette;}
-  // colorUpdated(1); 
-//   StaticJsonDocument<JSON_ARRAY_SIZE(113)> doc;
-
-// // parse a JSON array
-// deserializeJson(doc, serialized((const __FlashStringHelper*)JSON_mode_names));
-
-// // extract the values
-// JsonArray array = doc.as<JsonArray>();
-// for(JsonVariant v : array) {
-//     Serial.println(v.as<const char*>());
-// }
-  //Serial.println(serialized((const __FlashStringHelper*)JSON_mode_names)[0]);
 }
 
 void serializeState(JsonObject root)
