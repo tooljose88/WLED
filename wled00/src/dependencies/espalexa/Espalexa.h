@@ -10,7 +10,7 @@
  */
 /*
  * @title Espalexa library
- * @version 2.4.3
+ * @version 2.4.5
  * @author Christian Schwinne
  * @license MIT
  * @contributors d-999
@@ -49,7 +49,7 @@
 #include <WiFiUdp.h>
 
 #ifdef ESPALEXA_DEBUG
- #pragma message "Espalexa 2.4.3 debug mode"
+ #pragma message "Espalexa 2.4.5 debug mode"
  #define EA_DEBUG(x)  Serial.print (x)
  #define EA_DEBUGLN(x) Serial.println (x)
 #else
@@ -164,7 +164,7 @@ private:
     json += "\",\"modelid\":\"" + modelidString(dev->getType());
     json += "\",\"manufacturername\":\"Philips\",\"productname\":\"E" + String(static_cast<uint8_t>(dev->getType()));
     json += "\",\"uniqueid\":\"" + String(encodeLightId(deviceId+1));
-    json += "\",\"swversion\":\"espalexa-2.4.3\"}";
+    json += "\",\"swversion\":\"espalexa-2.4.5\"}";
     
     return json;
   }
@@ -188,7 +188,7 @@ private:
     }
     res += "\r\nFree Heap: " + (String)ESP.getFreeHeap();
     res += "\r\nUptime: " + (String)millis();
-    res += "\r\n\r\nEspalexa library v2.4.3 by Christian Schwinne 2019";
+    res += "\r\n\r\nEspalexa library v2.4.5 by Christian Schwinne 2020";
     server->send(200, "text/plain", res);
   }
   #endif
@@ -298,7 +298,7 @@ private:
       "SERVER: FreeRTOS/6.0.5, UPnP/1.0, IpBridge/1.17.0\r\n" // _modelName, _modelNumber
       "hue-bridgeid: "+ escapedMac +"\r\n"
       "ST: urn:schemas-upnp-org:device:basic:1\r\n"  // _deviceType
-      "USN: uuid:2f402f80-da50-11e1-9b23-"+ escapedMac +"::upnp:rootdevice\r\n" // _uuid::_deviceType
+      "USN: uuid:2f402f80-da50-11e1-9b23-"+ escapedMac +"::ssdp:all\r\n" // _uuid::_deviceType
       "\r\n";
 
     espalexaUdp.beginPacket(espalexaUdp.remoteIP(), espalexaUdp.remotePort());
@@ -370,9 +370,10 @@ public:
     if (!discoverable) return; //do not reply to M-SEARCH if not discoverable
     
     String request = packetBuffer;
-    if(request.indexOf("M-SEARCH") >= 0) {
+    if(request.indexOf("M-SEA") >= 0) { //M-SEARCH
       EA_DEBUGLN(request);
-      if(request.indexOf("upnp:rootdevice") > 0 || request.indexOf("asic:1") > 0) {
+      //match upnp:rootdevice, device:basic:1, ssdp:all and ssdp:discover
+      if(request.indexOf("np:rootd") > 0 || request.indexOf("asic:1") > 0 || request.indexOf("dp:all") > 0 || request.indexOf("dp:dis") > 0) {
         EA_DEBUGLN("Responding search req...");
         respondToSearch();
       }
@@ -443,7 +444,7 @@ public:
     if (req.indexOf("api") <0) return false; //return if not an API call
     EA_DEBUGLN("ok");
 
-    if (body.indexOf("devicetype") > 0) //client wants a hue api username, we dont care and give static
+    if (body.indexOf("devicetype") > 0) //client wants a hue api username, we don't care and give static
     {
       EA_DEBUGLN("devType");
       body = "";
@@ -453,7 +454,7 @@ public:
 
     if (req.indexOf("state") > 0) //client wants to control light
     {
-      server->send(200, "application/json", "[{\"success\":true}]"); //short valid response
+      server->send(200, "application/json", "[{\"success\":{\"/lights/1/state/\": true}}]");
 
       uint32_t devId = req.substring(req.indexOf("lights")+7).toInt();
       EA_DEBUG("ls"); EA_DEBUGLN(devId);
@@ -550,7 +551,7 @@ public:
       return true;
     }
 
-    //we dont care about other api commands at this time and send empty JSON
+    //we don't care about other api commands at this time and send empty JSON
     server->send(200, "application/json", "{}");
     return true;
   }
