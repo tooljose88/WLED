@@ -14,6 +14,8 @@
 //#define WLED_USE_ANALOG_LEDS //Uncomment for using "dumb" PWM controlled LEDs (see pins below, default R: gpio5, G: 12, B: 15, W: 13)
 //#define WLED_USE_H801 //H801 controller. Please uncomment #define WLED_USE_ANALOG_LEDS as well
 //#define WLED_USE_5CH_LEDS  //5 Channel H801 for cold and warm white
+//#define WLED_USE_BWLT11
+//#define WLED_USE_SHOJO_PCB
 
 #ifndef BTNPIN
 #define BTNPIN  0  //button pin. Needs to have pullup (gpio0 recommended)
@@ -38,8 +40,12 @@
 //END CONFIGURATION
 
 #if defined(USE_APA102) || defined(USE_WS2801) || defined(USE_LPD8806) || defined(USE_P9813)
- #define CLKPIN 0
- #define DATAPIN 2
+ #ifndef CLKPIN
+  #define CLKPIN 0
+ #endif
+ #ifndef DATAPIN
+  #define DATAPIN 2
+ #endif
  #if BTNPIN == CLKPIN || BTNPIN == DATAPIN
   #undef BTNPIN   // Deactivate button pin if it conflicts with one of the APA102 pins.
  #endif
@@ -62,13 +68,21 @@
     #define GPIN 4   //G pin for analog LED strip
     #define BPIN 14  //B pin for analog LED strip
     #define WPIN 5   //W pin for analog LED strip
-  #elif defined(SHOJO_PCB)
+  #elif defined(WLED_USE_SHOJO_PCB)
   //PWM pins - to use with Shojo PCB (https://www.bastelbunker.de/esp-rgbww-wifi-led-controller-vbs-edition/)
     #define RPIN 14  //R pin for analog LED strip
     #define GPIN 4   //G pin for analog LED strip
     #define BPIN 5   //B pin for analog LED strip
     #define WPIN 15  //W pin for analog LED strip
     #define W2PIN 12 //W2 pin for analog LED strip
+  #elif defined(WLED_USE_PLJAKOBS_PCB)
+  // PWM pins - to use with esp_rgbww_controller from patrickjahns/pljakobs (https://github.com/pljakobs/esp_rgbww_controller)
+    #define RPIN 12  //R pin for analog LED strip
+    #define GPIN 13  //G pin for analog LED strip
+    #define BPIN 14  //B pin for analog LED strip
+    #define WPIN 4   //W pin for analog LED strip
+    #define W2PIN 5  //W2 pin for analog LED strip
+    #undef IR_PIN
   #else
   //PWM pins - PINs 5,12,13,15 are used with Magic Home LED Controller
     #define RPIN 5   //R pin for analog LED strip
@@ -124,7 +138,9 @@
  #define PIXELFEATURE4 DotStarLbgrFeature
 #elif defined(USE_LPD8806)
  #define PIXELFEATURE3 Lpd8806GrbFeature 
- #define PIXELFEATURE4 Lpd8806GrbFeature
+#elif defined(USE_WS2801)
+ #define PIXELFEATURE3 NeoRbgFeature
+ #define PIXELFEATURE4 NeoRbgFeature
 #elif defined(USE_TM1814)
   #define PIXELFEATURE3 NeoWrgbTm1814Feature
   #define PIXELFEATURE4 NeoWrgbTm1814Feature
@@ -274,7 +290,7 @@ public:
       }
       break;
       case NeoPixelType_Grbw: {
-        #ifdef USE_LPD8806
+        #if defined(USE_LPD8806) || defined(USE_WS2801)
         _pGrbw->SetPixelColor(indexPixel, RgbColor(color.R,color.G,color.B));
         #else
         _pGrbw->SetPixelColor(indexPixel, color);

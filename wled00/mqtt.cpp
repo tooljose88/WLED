@@ -5,25 +5,15 @@
  */
 
 #ifdef WLED_ENABLE_MQTT
-#define MQTT_KEEP_ALIVE_TIME 60 // contact the MQTT broker every 60 seconds
+#define MQTT_KEEP_ALIVE_TIME 60    // contact the MQTT broker every 60 seconds
 
-void parseMQTTBriPayload(char *payload)
+void parseMQTTBriPayload(char* payload)
 {
-  if (strstr(payload, "ON") || strstr(payload, "on") || strstr(payload, "true"))
-  {
-    bri = briLast;
-    colorUpdated(1);
-  }
-  else if (strstr(payload, "T") || strstr(payload, "t"))
-  {
-    toggleOnOff();
-    colorUpdated(1);
-  }
-  else
-  {
+  if      (strstr(payload, "ON") || strstr(payload, "on") || strstr(payload, "true")) {bri = briLast; colorUpdated(1);}
+  else if (strstr(payload, "T" ) || strstr(payload, "t" )) {toggleOnOff(); colorUpdated(1);}
+  else {
     uint8_t in = strtoul(payload, NULL, 10);
-    if (in == 0 && bri > 0)
-      briLast = bri;
+    if (in == 0 && bri > 0) briLast = bri;
     bri = in;
     colorUpdated(NOTIFIER_CALL_MODE_DIRECT_CHANGE);
   }
@@ -56,11 +46,17 @@ void onMqttConnect(bool sessionPresent)
   DEBUG_PRINTLN("MQTT ready");
 }
 
-void onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total)
-{
+
+void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
 
   DEBUG_PRINT("MQTT msg: ");
   DEBUG_PRINTLN(topic);
+
+  // paranoia check to avoid npe if no payload
+  if (payload==nullptr) {
+    DEBUG_PRINTLN("no payload -> leave");
+    return;
+  }
   DEBUG_PRINTLN(payload);
 
   //no need to check the topic because we only get topics we are subscribed to
@@ -92,8 +88,7 @@ void onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProperties 
 void publishMqtt()
 {
   doPublishMqtt = false;
-  if (mqtt == nullptr || !mqtt->connected())
-    return;
+  if (!WLED_MQTT_CONNECTED) return;
   DEBUG_PRINTLN("Publish MQTT");
 
   char s[10];
@@ -142,22 +137,18 @@ bool initMqtt()
     mqtt->onMessage(onMqttMessage);
     mqtt->onConnect(onMqttConnect);
   }
-  if (mqtt->connected())
-    return true;
+  if (mqtt->connected()) return true;
 
   DEBUG_PRINTLN("Reconnecting MQTT");
   IPAddress mqttIP;
   if (mqttIP.fromString(mqttServer)) //see if server is IP or domain
   {
     mqtt->setServer(mqttIP, mqttPort);
-  }
-  else
-  {
+  } else {
     mqtt->setServer(mqttServer, mqttPort);
   }
   mqtt->setClientId(mqttClientID);
-  if (mqttUser[0] && mqttPass[0])
-    mqtt->setCredentials(mqttUser, mqttPass);
+  if (mqttUser[0] && mqttPass[0]) mqtt->setCredentials(mqttUser, mqttPass);
 
   strcpy(mqttStatusTopic, mqttDeviceTopic);
   strcat(mqttStatusTopic, "/status");
@@ -168,6 +159,6 @@ bool initMqtt()
 }
 
 #else
-bool initMqtt() { return false; }
-void publishMqtt() {}
+bool initMqtt(){return false;}
+void publishMqtt(){}
 #endif

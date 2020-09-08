@@ -10,7 +10,11 @@
  */
 /*
  * @title Espalexa library
+<<<<<<< HEAD
  * @version 2.4.5
+=======
+ * @version 2.4.6
+>>>>>>> v0.10.2
  * @author Christian Schwinne
  * @license MIT
  * @contributors d-999
@@ -49,7 +53,11 @@
 #include <WiFiUdp.h>
 
 #ifdef ESPALEXA_DEBUG
+<<<<<<< HEAD
  #pragma message "Espalexa 2.4.5 debug mode"
+=======
+ #pragma message "Espalexa 2.4.6 debug mode"
+>>>>>>> v0.10.2
  #define EA_DEBUG(x)  Serial.print (x)
  #define EA_DEBUGLN(x) Serial.println (x)
 #else
@@ -81,35 +89,29 @@ private:
   WiFiUDP espalexaUdp;
   IPAddress ipMulti;
   bool udpConnected = false;
-  char packetBuffer[255]; //buffer to hold incoming udp packet
   String escapedMac=""; //lowercase mac address
   
   //private member functions
-  String boolString(bool st)
-  {
-    return(st)?"true":"false";
-  }
-  
-  String modeString(EspalexaColorMode m)
+  const char* modeString(EspalexaColorMode m)
   {
     if (m == EspalexaColorMode::xy) return "xy";
     if (m == EspalexaColorMode::hs) return "hs";
     return "ct";
   }
   
-  String typeString(EspalexaDeviceType t)
+  const char* typeString(EspalexaDeviceType t)
   {
     switch (t)
     {
-      case EspalexaDeviceType::dimmable:      return "Dimmable light";
-      case EspalexaDeviceType::whitespectrum: return "Color temperature light";
-      case EspalexaDeviceType::color:         return "Color light";
-      case EspalexaDeviceType::extendedcolor: return "Extended color light";
+      case EspalexaDeviceType::dimmable:      return PSTR("Dimmable light");
+      case EspalexaDeviceType::whitespectrum: return PSTR("Color temperature light");
+      case EspalexaDeviceType::color:         return PSTR("Color light");
+      case EspalexaDeviceType::extendedcolor: return PSTR("Extended color light");
     }
-    return "Light";
+    return "";
   }
   
-  String modelidString(EspalexaDeviceType t)
+  const char* modelidString(EspalexaDeviceType t)
   {
     switch (t)
     {
@@ -118,7 +120,7 @@ private:
       case EspalexaDeviceType::color:         return "LST001";
       case EspalexaDeviceType::extendedcolor: return "LCT015";
     }
-    return "Plug";
+    return "";
   }
   
   //Workaround functions courtesy of Sonoff-Tasmota
@@ -135,11 +137,12 @@ private:
   }
   
   //device JSON string: color+temperature device emulates LCT015, dimmable device LWB010, (TODO: on/off Plug 01, color temperature device LWT010, color device LST001)
-  String deviceJsonString(uint8_t deviceId)
+  void deviceJsonString(uint8_t deviceId, char* buf)
   {
     deviceId--;
-    if (deviceId >= currentDeviceCount) return "{}"; //error
+    if (deviceId >= currentDeviceCount) {strcpy(buf,"{}"); return;} //error
     EspalexaDevice* dev = devices[deviceId];
+<<<<<<< HEAD
 
     String json = "{\"state\":{\"on\":";
     json += boolString(dev->getValue());
@@ -165,8 +168,35 @@ private:
     json += "\",\"manufacturername\":\"Philips\",\"productname\":\"E" + String(static_cast<uint8_t>(dev->getType()));
     json += "\",\"uniqueid\":\"" + String(encodeLightId(deviceId+1));
     json += "\",\"swversion\":\"espalexa-2.4.5\"}";
+=======
+>>>>>>> v0.10.2
     
-    return json;
+    //char buf_bri[12] = "";
+    //brightness support, add "bri" to JSON
+    //if (dev->getType() != EspalexaDeviceType::onoff) 
+    //  sprintf(buf_bri,",\"bri\":%u", dev->getLastValue()-1);
+    
+    char buf_col[80] = "";
+    //color support
+    if (static_cast<uint8_t>(dev->getType()) > 2)
+      sprintf_P(buf_col,PSTR(",\"hue\":%u,\"sat\":%u,\"effect\":\"none\",\"xy\":[%f,%f]")
+        ,dev->getHue(), dev->getSat(), dev->getX(), dev->getY());
+      
+    char buf_ct[16] = "";
+    //white spectrum support
+    if (static_cast<uint8_t>(dev->getType()) > 1 && dev->getType() != EspalexaDeviceType::color)
+      sprintf(buf_ct, ",\"ct\":%u", dev->getCt());
+    
+    char buf_cm[20] = "";
+    if (static_cast<uint8_t>(dev->getType()) > 1)
+      sprintf(buf_cm,PSTR("\",\"colormode\":\"%s"), modeString(dev->getColorMode()));
+    
+    sprintf_P(buf, PSTR("{\"state\":{\"on\":%s,\"bri\":%u%s%s,\"alert\":\"none%s\",\"mode\":\"homeautomation\",\"reachable\":true},"
+                   "\"type\":\"%s\",\"name\":\"%s\",\"modelid\":\"%s\",\"manufacturername\":\"Philips\",\"productname\":\"E%u"
+                   "\",\"uniqueid\":\"%u\",\"swversion\":\"espalexa-2.4.6\"}")
+                   
+    , (dev->getValue())?"true":"false", dev->getLastValue()-1, buf_col, buf_ct, buf_cm, typeString(dev->getType()),
+    dev->getName().c_str(), modelidString(dev->getType()), static_cast<uint8_t>(dev->getType()), encodeLightId(deviceId+1));
   }
   
   //Espalexa status page /espalexa
@@ -181,14 +211,18 @@ private:
       res += "Value of device " + String(i+1) + " (" + dev->getName() + "): " + String(dev->getValue()) + " (" + typeString(dev->getType());
       if (static_cast<uint8_t>(dev->getType()) > 1) //color support
       {
-        res += ", colormode=" + modeString(dev->getColorMode()) + ", r=" + String(dev->getR()) + ", g=" + String(dev->getG()) + ", b=" + String(dev->getB());
+        res += ", colormode=" + String(modeString(dev->getColorMode())) + ", r=" + String(dev->getR()) + ", g=" + String(dev->getG()) + ", b=" + String(dev->getB());
         res +=", ct=" + String(dev->getCt()) + ", hue=" + String(dev->getHue()) + ", sat=" + String(dev->getSat()) + ", x=" + String(dev->getX()) + ", y=" + String(dev->getY());
       }
       res += ")\r\n";
     }
     res += "\r\nFree Heap: " + (String)ESP.getFreeHeap();
     res += "\r\nUptime: " + (String)millis();
+<<<<<<< HEAD
     res += "\r\n\r\nEspalexa library v2.4.5 by Christian Schwinne 2020";
+=======
+    res += "\r\n\r\nEspalexa library v2.4.6 by Christian Schwinne 2020";
+>>>>>>> v0.10.2
     server->send(200, "text/plain", res);
   }
   #endif
@@ -206,7 +240,7 @@ private:
     EA_DEBUGLN("Body: " + body);
     if(!handleAlexaApiCall(server))
     #endif
-      server->send(404, "text/plain", "Not Found (espalexa-internal)");
+      server->send(404, "text/plain", "Not Found (espalexa)");
   }
 
   //send description.xml device property page
@@ -216,30 +250,31 @@ private:
     IPAddress localIP = WiFi.localIP();
     char s[16];
     sprintf(s, "%d.%d.%d.%d", localIP[0], localIP[1], localIP[2], localIP[3]);
-
-    String setup_xml = "<?xml version=\"1.0\" ?>"
+    char buf[1024];
+    
+    sprintf_P(buf,PSTR("<?xml version=\"1.0\" ?>"
         "<root xmlns=\"urn:schemas-upnp-org:device-1-0\">"
         "<specVersion><major>1</major><minor>0</minor></specVersion>"
-        "<URLBase>http://"+ String(s) +":80/</URLBase>"
+        "<URLBase>http://%s:80/</URLBase>"
         "<device>"
           "<deviceType>urn:schemas-upnp-org:device:Basic:1</deviceType>"
-          "<friendlyName>Espalexa ("+ String(s) +")</friendlyName>"
+          "<friendlyName>Espalexa (%s)</friendlyName>"
           "<manufacturer>Royal Philips Electronics</manufacturer>"
           "<manufacturerURL>http://www.philips.com</manufacturerURL>"
           "<modelDescription>Philips hue Personal Wireless Lighting</modelDescription>"
           "<modelName>Philips hue bridge 2012</modelName>"
           "<modelNumber>929000226503</modelNumber>"
           "<modelURL>http://www.meethue.com</modelURL>"
-          "<serialNumber>"+ escapedMac +"</serialNumber>"
-          "<UDN>uuid:2f402f80-da50-11e1-9b23-"+ escapedMac +"</UDN>"
+          "<serialNumber>%s</serialNumber>"
+          "<UDN>uuid:2f402f80-da50-11e1-9b23-%s</UDN>"
           "<presentationURL>index.html</presentationURL>"
         "</device>"
-        "</root>";
+        "</root>"),s,s,escapedMac.c_str(),escapedMac.c_str());
           
-    server->send(200, "text/xml", setup_xml.c_str());
+    server->send(200, "text/xml", buf);
     
-    EA_DEBUG("Sending :");
-    EA_DEBUGLN(setup_xml);
+    EA_DEBUG("Send setup.xml");
+    //EA_DEBUGLN(setup_xml);
   }
   
   //init the server
@@ -290,22 +325,28 @@ private:
     char s[16];
     sprintf(s, "%d.%d.%d.%d", localIP[0], localIP[1], localIP[2], localIP[3]);
 
-    String response = 
-      "HTTP/1.1 200 OK\r\n"
+    char buf[1024];
+    
+    sprintf_P(buf,PSTR("HTTP/1.1 200 OK\r\n"
       "EXT:\r\n"
       "CACHE-CONTROL: max-age=100\r\n" // SSDP_INTERVAL
-      "LOCATION: http://"+ String(s) +":80/description.xml\r\n"
+      "LOCATION: http://%s:80/description.xml\r\n"
       "SERVER: FreeRTOS/6.0.5, UPnP/1.0, IpBridge/1.17.0\r\n" // _modelName, _modelNumber
-      "hue-bridgeid: "+ escapedMac +"\r\n"
+      "hue-bridgeid: %s\r\n"
       "ST: urn:schemas-upnp-org:device:basic:1\r\n"  // _deviceType
+<<<<<<< HEAD
       "USN: uuid:2f402f80-da50-11e1-9b23-"+ escapedMac +"::ssdp:all\r\n" // _uuid::_deviceType
       "\r\n";
+=======
+      "USN: uuid:2f402f80-da50-11e1-9b23-%s::ssdp:all\r\n" // _uuid::_deviceType
+      "\r\n"),s,escapedMac.c_str(),escapedMac.c_str());
+>>>>>>> v0.10.2
 
     espalexaUdp.beginPacket(espalexaUdp.remoteIP(), espalexaUdp.remotePort());
     #ifdef ARDUINO_ARCH_ESP32
-    espalexaUdp.write((uint8_t*)response.c_str(), response.length());
+    espalexaUdp.write((uint8_t*)buf, strlen(buf));
     #else
-    espalexaUdp.write(response.c_str());
+    espalexaUdp.write(buf);
     #endif
     espalexaUdp.endPacket();                    
   }
@@ -362,7 +403,8 @@ public:
     if (!packetSize) return; //no new udp packet
     
     EA_DEBUGLN("Got UDP!");
-    int len = espalexaUdp.read(packetBuffer, 254);
+    char packetBuffer[255]; //buffer to hold incoming udp packet
+    uint16_t len = espalexaUdp.read(packetBuffer, 254);
     if (len > 0) {
       packetBuffer[len] = 0;
     }
@@ -372,8 +414,12 @@ public:
     String request = packetBuffer;
     if(request.indexOf("M-SEA") >= 0) { //M-SEARCH
       EA_DEBUGLN(request);
+<<<<<<< HEAD
       //match upnp:rootdevice, device:basic:1, ssdp:all and ssdp:discover
       if(request.indexOf("np:rootd") > 0 || request.indexOf("asic:1") > 0 || request.indexOf("dp:all") > 0 || request.indexOf("dp:dis") > 0) {
+=======
+      if(request.indexOf("upnp:rootdevice") > 0 || request.indexOf("asic:1") > 0 || request.indexOf("ssdp:all") > 0) {
+>>>>>>> v0.10.2
         EA_DEBUGLN("Responding search req...");
         respondToSearch();
       }
@@ -448,13 +494,17 @@ public:
     {
       EA_DEBUGLN("devType");
       body = "";
-      server->send(200, "application/json", "[{\"success\":{\"username\":\"2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr\"}}]");
+      server->send(200, "application/json", F("[{\"success\":{\"username\":\"2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr\"}}]"));
       return true;
     }
 
     if (req.indexOf("state") > 0) //client wants to control light
     {
+<<<<<<< HEAD
       server->send(200, "application/json", "[{\"success\":{\"/lights/1/state/\": true}}]");
+=======
+      server->send(200, "application/json", F("[{\"success\":{\"/lights/1/state/\": true}}]"));
+>>>>>>> v0.10.2
 
       uint32_t devId = req.substring(req.indexOf("lights")+7).toInt();
       EA_DEBUG("ls"); EA_DEBUGLN(devId);
@@ -531,7 +581,9 @@ public:
         for (int i = 0; i<currentDeviceCount; i++)
         {
           jsonTemp += "\"" + String(encodeLightId(i+1)) + "\":";
-          jsonTemp += deviceJsonString(i+1);
+          char buf[512];
+          deviceJsonString(i+1, buf);
+          jsonTemp += buf;
           if (i < currentDeviceCount-1) jsonTemp += ",";
         }
         jsonTemp += "}";
@@ -544,7 +596,9 @@ public:
         {
           server->send(200, "application/json", "{}");
         } else {
-          server->send(200, "application/json", deviceJsonString(devId));
+          char buf[512];
+          deviceJsonString(devId, buf);
+          server->send(200, "application/json", buf);
         }
       }
       
