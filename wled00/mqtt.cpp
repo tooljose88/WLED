@@ -19,6 +19,7 @@ void parseMQTTBriPayload(char* payload)
   }
 }
 
+
 void onMqttConnect(bool sessionPresent)
 {
   //(re)subscribe to required topics
@@ -78,12 +79,11 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
   else if (strstr(topic, "/api"))
   {
     String apireq = "win&";
-    apireq += (char *)payload;
+    apireq += (char*)payload;
     handleSet(nullptr, apireq);
-  }
-  else
-    parseMQTTBriPayload(payload);
+  } else parseMQTTBriPayload(payload);
 }
+
 
 void publishMqtt()
 {
@@ -105,11 +105,8 @@ void publishMqtt()
   strcat(subuf, "/c");
   mqtt->publish(subuf, 0, true, s);
 
-
-
   StaticJsonDocument<200> doc1;
   JsonObject state1 = doc1.to<JsonObject>();
-
   serializeHA(state1);
   serializeJsonPretty(doc1, obj);
   strcpy(subuf, mqttDeviceTopic);
@@ -123,16 +120,15 @@ void publishMqtt()
   mqtt->publish(subuf, 0, true, apires);
 }
 
+
 //HA autodiscovery was removed in favor of the native integration in HA v0.102.0
 
 bool initMqtt()
 {
   lastMqttReconnectAttempt = millis();
-  if (!mqttEnabled || mqttServer[0] == 0 || !WLED_CONNECTED)
-    return false;
+  if (!mqttEnabled || mqttServer[0] == 0 || !WLED_CONNECTED) return false;
 
-  if (mqtt == nullptr)
-  {
+  if (mqtt == nullptr) {
     mqtt = new AsyncMqttClient();
     mqtt->onMessage(onMqttMessage);
     mqtt->onConnect(onMqttConnect);

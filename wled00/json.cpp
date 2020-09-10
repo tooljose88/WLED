@@ -291,9 +291,9 @@ void serializeSegment(JsonObject& root, WS2812FX::Segment& seg, byte id)
     }
 	}
 
-	root["fx"] = seg.mode;
-	root["sx"] = seg.speed;
-	root["ix"] = seg.intensity;
+	root["fx"]  = seg.mode;
+	root["sx"]  = seg.speed;
+	root["ix"]  = seg.intensity;
 	root["pal"] = seg.palette;
 	root["sel"] = seg.isSelected();
 	root["rev"] = seg.getOption(SEG_OPTION_REVERSED);

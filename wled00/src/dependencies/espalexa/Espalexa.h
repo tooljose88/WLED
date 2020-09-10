@@ -10,11 +10,7 @@
  */
 /*
  * @title Espalexa library
-<<<<<<< HEAD
- * @version 2.4.5
-=======
  * @version 2.4.6
->>>>>>> v0.10.2
  * @author Christian Schwinne
  * @license MIT
  * @contributors d-999
@@ -53,11 +49,7 @@
 #include <WiFiUdp.h>
 
 #ifdef ESPALEXA_DEBUG
-<<<<<<< HEAD
- #pragma message "Espalexa 2.4.5 debug mode"
-=======
  #pragma message "Espalexa 2.4.6 debug mode"
->>>>>>> v0.10.2
  #define EA_DEBUG(x)  Serial.print (x)
  #define EA_DEBUGLN(x) Serial.println (x)
 #else
@@ -142,34 +134,6 @@ private:
     deviceId--;
     if (deviceId >= currentDeviceCount) {strcpy(buf,"{}"); return;} //error
     EspalexaDevice* dev = devices[deviceId];
-<<<<<<< HEAD
-
-    String json = "{\"state\":{\"on\":";
-    json += boolString(dev->getValue());
-    if (dev->getType() != EspalexaDeviceType::onoff) //bri support
-    {
-      json += ",\"bri\":" + String(dev->getLastValue()-1);
-      if (static_cast<uint8_t>(dev->getType()) > 2) //color support
-      {
-        json += ",\"hue\":" + String(dev->getHue()) + ",\"sat\":" + String(dev->getSat());
-        json += ",\"effect\":\"none\",\"xy\":[" + String(dev->getX()) + "," + String(dev->getY()) + "]";
-      }
-      if (static_cast<uint8_t>(dev->getType()) > 1 && dev->getType() != EspalexaDeviceType::color) //white spectrum support
-      {
-        json += ",\"ct\":" + String(dev->getCt());
-      }
-    }
-    json += ",\"alert\":\"none";
-    if (static_cast<uint8_t>(dev->getType()) > 1) json += "\",\"colormode\":\"" + modeString(dev->getColorMode());
-    json += "\",\"mode\":\"homeautomation\",\"reachable\":true},";
-    json += "\"type\":\"" + typeString(dev->getType());
-    json += "\",\"name\":\"" + dev->getName();
-    json += "\",\"modelid\":\"" + modelidString(dev->getType());
-    json += "\",\"manufacturername\":\"Philips\",\"productname\":\"E" + String(static_cast<uint8_t>(dev->getType()));
-    json += "\",\"uniqueid\":\"" + String(encodeLightId(deviceId+1));
-    json += "\",\"swversion\":\"espalexa-2.4.5\"}";
-=======
->>>>>>> v0.10.2
     
     //char buf_bri[12] = "";
     //brightness support, add "bri" to JSON
@@ -218,11 +182,7 @@ private:
     }
     res += "\r\nFree Heap: " + (String)ESP.getFreeHeap();
     res += "\r\nUptime: " + (String)millis();
-<<<<<<< HEAD
-    res += "\r\n\r\nEspalexa library v2.4.5 by Christian Schwinne 2020";
-=======
     res += "\r\n\r\nEspalexa library v2.4.6 by Christian Schwinne 2020";
->>>>>>> v0.10.2
     server->send(200, "text/plain", res);
   }
   #endif
@@ -334,13 +294,8 @@ private:
       "SERVER: FreeRTOS/6.0.5, UPnP/1.0, IpBridge/1.17.0\r\n" // _modelName, _modelNumber
       "hue-bridgeid: %s\r\n"
       "ST: urn:schemas-upnp-org:device:basic:1\r\n"  // _deviceType
-<<<<<<< HEAD
-      "USN: uuid:2f402f80-da50-11e1-9b23-"+ escapedMac +"::ssdp:all\r\n" // _uuid::_deviceType
-      "\r\n";
-=======
       "USN: uuid:2f402f80-da50-11e1-9b23-%s::ssdp:all\r\n" // _uuid::_deviceType
       "\r\n"),s,escapedMac.c_str(),escapedMac.c_str());
->>>>>>> v0.10.2
 
     espalexaUdp.beginPacket(espalexaUdp.remoteIP(), espalexaUdp.remotePort());
     #ifdef ARDUINO_ARCH_ESP32
@@ -412,14 +367,9 @@ public:
     if (!discoverable) return; //do not reply to M-SEARCH if not discoverable
     
     String request = packetBuffer;
-    if(request.indexOf("M-SEA") >= 0) { //M-SEARCH
+    if(request.indexOf("M-SEARCH") >= 0) {
       EA_DEBUGLN(request);
-<<<<<<< HEAD
-      //match upnp:rootdevice, device:basic:1, ssdp:all and ssdp:discover
-      if(request.indexOf("np:rootd") > 0 || request.indexOf("asic:1") > 0 || request.indexOf("dp:all") > 0 || request.indexOf("dp:dis") > 0) {
-=======
       if(request.indexOf("upnp:rootdevice") > 0 || request.indexOf("asic:1") > 0 || request.indexOf("ssdp:all") > 0) {
->>>>>>> v0.10.2
         EA_DEBUGLN("Responding search req...");
         respondToSearch();
       }
@@ -500,11 +450,7 @@ public:
 
     if (req.indexOf("state") > 0) //client wants to control light
     {
-<<<<<<< HEAD
-      server->send(200, "application/json", "[{\"success\":{\"/lights/1/state/\": true}}]");
-=======
       server->send(200, "application/json", F("[{\"success\":{\"/lights/1/state/\": true}}]"));
->>>>>>> v0.10.2
 
       uint32_t devId = req.substring(req.indexOf("lights")+7).toInt();
       EA_DEBUG("ls"); EA_DEBUGLN(devId);

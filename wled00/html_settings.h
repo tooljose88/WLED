@@ -131,9 +131,6 @@ Linear (never wrap)</option><option value="3">None (not recommended)</option>
 onclick="B()">Back</button><button type="submit">Save</button></form></body>
 </html>)=====";
 
-#else
-const char PAGE_settings_dmx[] PROGMEM = R"=====()=====";
-#endif
 
 #ifdef WLED_ENABLE_DMX
 

@@ -38,6 +38,7 @@ bool decodeIRCustom(uint32_t code)
 }
 
 
+
 void relativeChange(byte* property, int8_t amount, byte lowerBoundary, byte higherBoundary)
 {
   int16_t new_val = (int16_t) *property + amount;

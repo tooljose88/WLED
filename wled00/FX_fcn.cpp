@@ -72,6 +72,7 @@ void WS2812FX::service() {
   now = nowUp + timebase;
   if (nowUp - _lastShow < MIN_SHOW_DELAY) return;
   bool doShow = false;
+
   for(uint8_t i=0; i < MAX_NUM_SEGMENTS; i++)
   {
     _segment_index = i;
@@ -528,6 +529,7 @@ void WS2812FX::resetSegments() {
   _segments[0].colors[0] = DEFAULT_COLOR;
   _segments[0].start = 0;
   _segments[0].speed = DEFAULT_SPEED;
+  _segments[0].intensity = DEFAULT_INTENSITY;
   _segments[0].stop = _length;
   _segments[0].grouping = 1;
   _segments[0].setOption(SEG_OPTION_SELECTED, 1);
@@ -540,6 +542,8 @@ void WS2812FX::resetSegments() {
     _segments[i].grouping = 1;
     _segments[i].setOption(SEG_OPTION_ON, 1);
     _segments[i].opacity = 255;
+    _segments[i].speed = DEFAULT_SPEED;
+    _segments[i].intensity = DEFAULT_INTENSITY;
     _segment_runtimes[i].reset();
   }
   _segment_runtimes[0].reset();

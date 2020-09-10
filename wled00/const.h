@@ -10,8 +10,6 @@
 #define DEFAULT_AP_PASS     "wled1234"
 #define DEFAULT_OTA_PASS    "wledota"
 
-<<<<<<< HEAD
-=======
 //increase if you need more
 #define WLED_MAX_USERMODS 4
 
@@ -24,7 +22,6 @@
 #define USERMOD_ID_PIRSWITCH      5            //Usermod "usermod_PIR_sensor_switch.h"
 #define USERMOD_ID_IMU            6            //Usermod "usermod_mpu6050_imu.h"
 
->>>>>>> v0.10.2
 //Access point behavior
 #define AP_BEHAVIOR_BOOT_NO_CONN  0            //Open AP when no connection after boot
 #define AP_BEHAVIOR_NO_CONN       1            //Open when no connection (either after boot or if connection is lost)
@@ -59,10 +56,7 @@
 #define REALTIME_MODE_E131        4
 #define REALTIME_MODE_ADALIGHT    5
 #define REALTIME_MODE_ARTNET      6
-<<<<<<< HEAD
-=======
 #define REALTIME_MODE_TPM2NET     7
->>>>>>> v0.10.2
 
 //realtime override modes
 #define REALTIME_OVERRIDE_NONE    0
@@ -105,10 +99,6 @@
 #define SEG_OPTION_SELECTED       0
 #define SEG_OPTION_REVERSED       1
 #define SEG_OPTION_ON             2
-<<<<<<< HEAD
-#define SEG_OPTION_TRANSITIONAL   7
-
-=======
 #define SEG_OPTION_MIRROR         3            //Indicates that the effect will be mirrored within the segment
 #define SEG_OPTION_NONUNITY       4            //Indicates that the effect does not use FRAMETIME or needs getPixelColor
 #define SEG_OPTION_FREEZE         5            //Segment contents will not be refreshed
@@ -120,7 +110,6 @@
 #define NL_MODE_COLORFADE         2            //Fade to target brightness and secondary color gradually
 #define NL_MODE_SUN               3            //Sunrise/sunset. Target brightness is set immediately, then Sunrise effect is started. Max 60 min.
 
->>>>>>> v0.10.2
 //EEPROM size
 #define EEPSIZE 2560  //Maximum is 4096
 

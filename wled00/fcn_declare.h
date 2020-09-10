@@ -83,9 +83,11 @@ void handleIR();
 
 void deserializeSegment(JsonObject elem, byte it);
 bool deserializeState(JsonObject root);
+void deserializeHA(JsonObject root);
 void serializeSegment(JsonObject& root, WS2812FX::Segment& seg, byte id);
 void serializeState(JsonObject root);
 void serializeInfo(JsonObject root);
+void serializeHA(JsonObject root);
 void serveJson(AsyncWebServerRequest* request);
 bool serveLiveLeds(AsyncWebServerRequest* request, uint32_t wsClient = 0);
 

@@ -58,6 +58,7 @@ void handleE131Packet(e131_packet_t* p, IPAddress clientIP, bool isArtnet){
   // update status info
   realtimeIP = clientIP;
   byte wChannel = 0;
+
   switch (DMXMode) {
     case DMX_MODE_DISABLED:
       return;  // nothing to do
