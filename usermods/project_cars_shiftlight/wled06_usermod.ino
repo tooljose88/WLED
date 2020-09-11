@@ -18,28 +18,6 @@ u16 PCARS_maxRPM;
 long PCARS_lastRead = millis() - 2001;
 float PCARS_rpmRatio;
 
-<<<<<<< HEAD
-
-void userSetup()
-{
-  UDP.begin(PCARS_localUdpPort);
-}
-
-void userConnected()
-{
-  // new wifi, who dis?
-}
-
-void userLoop()
-{
-  PCARS_readValues();
-  if (PCARS_lastRead > millis() - 2000) {
-    PCARS_buildcolorbars();
-  }
-}
-
-=======
->>>>>>> v0.10.2
 void PCARS_readValues() {
 
   int PCARS_packetSize = UDP.parsePacket();
@@ -51,11 +29,7 @@ void PCARS_readValues() {
     if (len == 1367) { // Telemetry packet. Ignoring everything else.
       PCARS_lastRead = millis();
 
-<<<<<<< HEAD
-      arlsLock(realtimeTimeoutMs, REALTIME_MODE_GENERIC);
-=======
       realtimeLock(realtimeTimeoutMs, REALTIME_MODE_GENERIC);
->>>>>>> v0.10.2
       // current RPM
       memcpy(&PCARS_tempChar, &PCARS_packet[124], 2);
       PCARS_RPM = (PCARS_tempChar[1] << 8) + PCARS_tempChar[0];
@@ -100,8 +74,6 @@ void PCARS_buildcolorbars() {
   }
   colorUpdated(5);
   strip.show();
-<<<<<<< HEAD
-=======
 }
 
 void userSetup()
@@ -120,5 +92,4 @@ void userLoop()
   if (PCARS_lastRead > millis() - 2000) {
     PCARS_buildcolorbars();
   }
->>>>>>> v0.10.2
 }

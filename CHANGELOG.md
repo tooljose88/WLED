@@ -1,7 +1,20 @@
 ## WLED changelog
 
-<<<<<<< HEAD
-=======
+### Development versions after the 0.10.2 release
+
+#### Build 2009100
+
+-   Fixed sunrise mode not reinitializing
+-   Fixed passwords not clearable
+
+#### Build 2009070
+
+-   New Segments are now initialized with default speed and intensity
+
+#### Build 2009030
+
+-   Fixed bootloop if mDNS is used on builds without OTA support
+
 ### WLED version 0.10.2
 
 #### Build 2008310
@@ -119,7 +132,6 @@
 -   Added BWLT11 and SHOJO_PCB defines to NpbWrapper
 -   Merged pull request #898 adding Solid Glitter effect
 
->>>>>>> v0.10.2
 ### WLED version 0.10.0
 
 #### Build 2005030

@@ -24,8 +24,15 @@ void deserializeHA(JsonObject root){
     col[2] = root["color"]["b"];
   }
   if(root.containsKey("effect")){
-  effectCurrent = root["effect"] | effectCurrent;
-  effectSpeed = root["transition"] | effectSpeed;
+  for (int i = 0; i < sizeof(mqtt_mode_names)/sizeof(char *); i++)
+  {
+    if (!strcmp(root["effect"],mqtt_mode_names[i])){
+      effectCurrent = i;
+      break;
+    }
+  }
+  //effectCurrent = mqtt_mode_names[num] | effectCurrent;
+  effectSpeed = root["sx"] | effectSpeed;
   effectIntensity = root["ix"] | effectIntensity;
   effectPalette = root["pal"] | effectPalette;}
   colorUpdated(1); 
@@ -307,6 +314,16 @@ void serializeHA(JsonObject root){
     color["r"] = col[0];
     color["g"] = col[1];
     color["b"] = col[2];
+  for (size_t i = 0; i < sizeof(mqtt_mode_names)/sizeof(char *); i++)
+  {
+    if (i == effectCurrent){
+      root["effect"] = mqtt_mode_names[i];
+      break;
+    }
+  }
+  root["sx"] = effectSpeed;
+  root["ix"] = effectIntensity;
+  root["pal"] = effectPalette;
 }
 
 void serializeState(JsonObject root)

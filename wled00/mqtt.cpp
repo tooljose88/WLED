@@ -95,29 +95,29 @@ void publishMqtt()
   char subuf[38];
   String obj;
 
-  sprintf(s, "%ld", bri);
-  strcpy(subuf, mqttDeviceTopic);
-  strcat(subuf, "/g");
-  mqtt->publish(subuf, 0, true, s);
+  // sprintf(s, "%ld", bri);
+  // strcpy(subuf, mqttDeviceTopic);
+  // strcat(subuf, "/g");
+  // mqtt->publish(subuf, 0, true, s);
 
-  sprintf(s, "#%06X", (col[3] << 24) | (col[0] << 16) | (col[1] << 8) | (col[2]));
-  strcpy(subuf, mqttDeviceTopic);
-  strcat(subuf, "/c");
-  mqtt->publish(subuf, 0, true, s);
+  // sprintf(s, "#%06X", (col[3] << 24) | (col[0] << 16) | (col[1] << 8) | (col[2]));
+  // strcpy(subuf, mqttDeviceTopic);
+  // strcat(subuf, "/c");
+  // mqtt->publish(subuf, 0, true, s);
 
   StaticJsonDocument<200> doc1;
   JsonObject state1 = doc1.to<JsonObject>();
   serializeHA(state1);
   serializeJsonPretty(doc1, obj);
   strcpy(subuf, mqttDeviceTopic);
-  strcat(subuf, "/status");
+  strcat(subuf, "/state");
   mqtt->publish(subuf, 0, true, obj.c_str());
 
-  char apires[1024];
-  XML_response(nullptr, apires);
-  strcpy(subuf, mqttDeviceTopic);
-  strcat(subuf, "/v");
-  mqtt->publish(subuf, 0, true, apires);
+  // char apires[1024];
+  // XML_response(nullptr, apires);
+  // strcpy(subuf, mqttDeviceTopic);
+  // strcat(subuf, "/v");
+  // mqtt->publish(subuf, 0, true, apires);
 }
 
 
