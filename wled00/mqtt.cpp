@@ -60,6 +60,17 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
   }
   DEBUG_PRINTLN(payload);
   size_t topicPrefixLen = strlen(mqttDeviceTopic);
+  if (strncmp(topic, mqttDeviceTopic, topicPrefixLen) == 0) {
+      topic += topicPrefixLen;
+  } else {
+      topicPrefixLen = strlen(mqttGroupTopic);
+      if (strncmp(topic, mqttGroupTopic, topicPrefixLen) == 0) {
+          topic += topicPrefixLen;
+      } else {
+          // Topic not used here. Probably a usermod subscribed to this topic.
+          return;
+      }
+  }
 
 
   if (strcmp(topic, mqttDeviceTopic) ==0)
@@ -78,12 +89,18 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
   }
   else if (strstr(topic, "/api"))
   {
-    String apireq = "win&";
-    apireq += (char*)payload;
-    handleSet(nullptr, apireq);
+    if (payload[0] == '{') { //JSON API
+      DynamicJsonDocument doc(JSON_BUFFER_SIZE);
+      deserializeJson(doc, payload);
+      deserializeState(doc.as<JsonObject>());
+    } else { //HTTP API
+      String apireq = "win&";
+      apireq += (char*)payload;
+      handleSet(nullptr, apireq);
+    }
   } else if (strcmp(topic, "") == 0)
   {
-      parseMQTTBriPayload(payload);
+    parseMQTTBriPayload(payload);
   }
   if (strncmp(topic, mqttDeviceTopic, topicPrefixLen) == 0) {
       topic += topicPrefixLen;
