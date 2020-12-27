@@ -61,20 +61,6 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
   DEBUG_PRINTLN(payload);
   size_t topicPrefixLen = strlen(mqttDeviceTopic);
   if (strncmp(topic, mqttDeviceTopic, topicPrefixLen) == 0) {
-      topic += topicPrefixLen;
-  } else {
-      topicPrefixLen = strlen(mqttGroupTopic);
-      if (strncmp(topic, mqttGroupTopic, topicPrefixLen) == 0) {
-          topic += topicPrefixLen;
-      } else {
-          // Topic not used here. Probably a usermod subscribed to this topic.
-          return;
-      }
-  }
-
-
-  if (strcmp(topic, mqttDeviceTopic) ==0)
-  {
     DEBUG_PRINTLN("Bien hecho");
     StaticJsonDocument<200> jsonBuffer;
     DeserializationError error = deserializeJson(jsonBuffer, payload);
@@ -86,7 +72,9 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
     }
     JsonObject toor = jsonBuffer.as<JsonObject>();
     deserializeHA(toor);
+    topic += topicPrefixLen;
   }
+
   else if (strstr(topic, "/api"))
   {
     if (payload[0] == '{') { //JSON API
@@ -108,10 +96,10 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
       size_t topic_prefix_len = strlen(mqttGroupTopic);
       if (strncmp(topic, mqttGroupTopic, topicPrefixLen) == 0) {
           topic += topicPrefixLen;
-      } //else {
-      //     // Topic not used here. Probably a usermod subscribed to this topic.
-      //     return;
-      // }
+      } else {
+          // Topic not used here. Probably a usermod subscribed to this topic.
+          return;
+      }
   }
   DEBUG_PRINT(topic);
   DEBUG_PRINT("=");
